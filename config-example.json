@@ -1,0 +1,77 @@
+{
+    "month-label": true,
+    "paydays": [
+        {
+            "label": "A💰",
+            "schedule": "bi-weekly",
+            "weekday": "monday",
+            "example": "2026-04-06"
+        },
+        {
+            "label": "B💰",
+            "schedule": "twice-monthly-1st-15th"
+        }
+    ],
+    "fonts": {
+        "default": "Metamorphous",
+        "month-label": "UnifrakturCook",
+        "day": null,
+        "label": null
+    },
+    "recurring-events": {
+        "birthdays": {
+            "Isaac Asimov": "1920-01-02",
+            "J.R.R. Tolkien": "1892-01-03",
+            "Galileo Galilei": "1564-02-15",
+            "Nicolaus Copernicus": "1473-02-19",
+            "Douglas Adams": "1952-03-11",
+            "Ada Lovelace": "1815-12-10",
+            "Grace Hopper": "1906-12-09",
+            "Katherine Johnson": "1918-08-26"
+        },
+        "anniversaries": {
+            "N+B": "2006-07-02"
+        },
+        "other": [
+            {"label": "Friday D&D", "weekday": "friday", "time": "17:40", "schedule": "weekly", "image": "event-art/gold-piece.webp", "size": "small", "skips": ["2026-04-17", "2026-05-22"]},
+            {"label": "Phandelver", "weekday": "sunday", "time": "19:00", "schedule": "weekly", "image": "event-art/shard.png", "size": "small", "skips": ["2026-04-12", "2026-05-17"]}
+        ]
+    },
+    "events": [
+        {"date": "2026-05-19", "label": "Google I/O 2026", "image": "event-art/google-io-2026.png", "size": "large"},
+        {"date": "2026-05-20", "label": "Google I/O 2026", "image": "event-art/google-io-2026.png", "size": "large"}
+    ],
+    "holidays": [
+        {"date": "January 1", "label": "New Years Day", "class": "work-holiday"},
+        {"date": "third monday in january", "label": "MLK Jr. Day", "class": "work-holiday"},
+        {"date": "third monday in february", "label": "Presidents' Day", "class": "work-holiday"},
+        {"date": "last monday in may", "label": "Memorial Day", "class": "work-holiday"},
+        {"date": "June 19", "label": "Juneteenth ", "class": "work-holiday", "weekend_adjust": true},
+        {"date": "July 4", "label": "Independence Day", "class": "work-holiday", "bridge_weekend": true, "weekend_adjust": true},
+        {"date": "first monday in september", "label": "Labor Day", "class": "work-holiday"},
+        {"date": "second monday in october", "label": "Indigenous People's Day", "class": "work-holiday"},
+        {"date": "November 11", "label": "Veterans Day", "class": "work-holiday", "weekend_adjust": true},
+        {"date": "fourth thursday in november", "label": "Thanksgiving Day", "class": "work-holiday"},
+        {"date": "day after fourth thursday in november", "label": "Day After Thanksgiving", "class": "work-holiday"},
+        {"date": "December 24", "label": "Christmas Eve", "class": "work-holiday"},
+        {"date": "December 25", "label": "Christmas", "class": "work-holiday"},
+        {"date": "December 31", "label": "New Years Eve", "class": "work-holiday"},
+
+        {"date": "February 14", "label": "Valentine's Day", "class": "holiday"},
+        {"date": "October 31", "label": "Halloween", "class": "holiday"},
+
+        {"date": "March 4", "label": "Game Master Appreciation", "class": "geek"},
+        {"date": "March 14", "label": "π Day 🥧", "class": "geek"},
+        {"date": "April 5", "label": "🖖 First Contact Day", "class": "geek"},
+        {"date": "first saturday in May", "label": "💫 Free Comic Book Day", "class": "geek"},
+        {"date": "May 4", "label": "May the 4th be With You", "class": "geek"},
+        {"date": "May 25", "label": "Towel Day 📘", "class": "geek"},
+        {"date": "June 16", "label": "Captain Picard Day", "class": "geek"},
+        {"date": "Last friday in July", "label": "SysAdmin Day", "class": "geek"},
+        {"date": "September 19", "label": "🏴‍☠️ Talk like a Pirate", "class": "geek"},
+        {"date": "second tuesday of october", "label": "Ada Lovelace Day", "class": "geek"},
+        {"date": "November 23", "label": "TARDIS Day", "class": "geek"}
+    ],
+    "ical": {
+    }
+}

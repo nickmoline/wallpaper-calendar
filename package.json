@@ -1,0 +1,31 @@
+{
+  "name": "desktop-calendar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts run",
+    "install-cron": "ts-node src/index.ts install",
+    "uninstall-cron": "ts-node src/index.ts uninstall",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "chrono-node": "^2.9.0",
+    "commander": "^14.0.3",
+    "dayjs": "^1.11.20",
+    "node-ical": "^0.26.0",
+    "node-vibrant": "^4.0.4",
+    "puppeteer": "^24.40.0",
+    "systeminformation": "^5.31.5",
+    "wallpaper": "^7.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.2"
+  }
+}

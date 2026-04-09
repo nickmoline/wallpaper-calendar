@@ -1,0 +1,8 @@
+node_modules/
+event-art/
+month-art/
+!event-art/.gitkeep
+!month-art/.gitkeep
+!event-art/google-io-2026.png
+config.json
+output/
