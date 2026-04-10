@@ -3,6 +3,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { ColorScheme } from './colors';
 import { ProcessedEvent } from '../engine/dates';
+import { DailyWeather } from '../engine/weather';
+import { DailyMoon } from '../engine/moon';
 
 function getBase64Image(imagePath: string, configDir: string): string {
     const emptyPixel = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -28,7 +30,9 @@ export function renderCalendarHtml(
     showMonthLabel: boolean,
     configDir: string,
     simulatedToday?: dayjs.Dayjs,
-    fonts?: { default: string; 'month-label'?: string | null; day?: string | null; label?: string | null }
+    fonts?: { default: string; 'month-label'?: string | null; day?: string | null; label?: string | null },
+    dailyWeather?: Map<string, DailyWeather>,
+    dailyMoon?: Map<string, DailyMoon>
 ): string {
     const today = (simulatedToday || dayjs()).startOf('day');
     const startOfMonth = dayjs().year(year).month(month - 1).startOf('month');
@@ -87,13 +91,31 @@ export function renderCalendarHtml(
             topLabelHtml += `</div>`;
         }
 
+        const weather = dailyWeather?.get(dateStr);
+        const moon = dailyMoon?.get(dateStr);
+
+        let weatherHtml = '';
+        if (weather) {
+            weatherHtml = `<div class="weather-info"><i class="wi ${weather.iconClass}"></i> <span class="temp">${weather.maxTemp}&deg;/${weather.minTemp}&deg;</span></div>`;
+        }
+        let moonHtml = '';
+        if (moon) {
+            moonHtml = `<div class="moon-info" title="Moon phase"><i class="wi ${moon.iconClass}"></i></div>`;
+        }
+
         const topRowHtml = `
             <div class="day-top-row">
                 <div class="date-left-group">
                     <div class="date-number">${dateNum}</div>
                     ${topLabelHtml}
                 </div>
-                <div class="paydays-container">${paydayHtml}</div>
+                <div class="top-right-group">
+                    <div class="astro-weather-group">
+                        ${moonHtml}
+                        ${weatherHtml}
+                    </div>
+                    <div class="paydays-container">${paydayHtml}</div>
+                </div>
             </div>
         `;
         
@@ -203,6 +225,7 @@ export function renderCalendarHtml(
 <html>
 <head>
 ${fontTags}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css">
 <style>
     :root {
         --primary: ${colors.primary};
@@ -361,6 +384,41 @@ ${fontTags}
         flex-direction: column;
         gap: 4px;
         align-items: flex-start;
+    }
+    .top-right-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+    }
+    .astro-weather-group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 6px;
+    }
+    .moon-info {
+        color: #e0e0e0;
+        font-size: 1.1rem;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+    .weather-info {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #f2c94c;
+        font-size: 0.9rem;
+        font-weight: bold;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+    .weather-info i.wi {
+        font-size: 1.1rem;
+    }
+    .weather-info .temp {
+        font-family: ${fonts ? `'${labelFont}', sans-serif` : defaultFontStr};
+        color: rgba(255,255,255,0.9);
+        font-size: 0.75rem;
     }
     .paydays-container {
         display: flex;

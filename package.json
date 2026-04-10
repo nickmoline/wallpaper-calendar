@@ -20,11 +20,13 @@
     "node-ical": "^0.26.0",
     "node-vibrant": "^4.0.4",
     "puppeteer": "^24.40.0",
+    "suncalc": "^1.9.0",
     "systeminformation": "^5.31.5",
     "wallpaper": "^7.3.0"
   },
   "devDependencies": {
     "@types/node": "^25.5.2",
+    "@types/suncalc": "^1.9.2",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2"
   }

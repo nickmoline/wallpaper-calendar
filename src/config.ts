@@ -1,6 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+export interface WeatherConfig {
+    lat: number;
+    lon: number;
+    appid?: string; // no longer required for open-meteo
+    units?: 'standard' | 'metric' | 'imperial';
+}
+
 export interface PaydayConfig {
     label: string;
     schedule: string; // 'weekly', 'bi-weekly', 'twice-monthly-15th-last', 'twice-monthly-1st-15th', 'monthly'
@@ -30,6 +37,7 @@ export interface EventConfig {
     image?: string;
     size?: 'small' | 'medium' | 'large';
     class?: string;
+    location?: string;
 }
 
 export interface FontConfig {
@@ -51,6 +59,7 @@ export interface CalendarConfig {
     events?: EventConfig[];
     holidays?: EventConfig[];
     ical?: Record<string, string>;
+    weather?: WeatherConfig;
 }
 
 export function loadConfig(configPath: string): CalendarConfig {

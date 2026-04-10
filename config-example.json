@@ -1,14 +1,19 @@
 {
+    "weather": {
+        "lat": 33.812608,
+        "lon": -117.919385,
+        "units": "imperial"
+    },
     "month-label": true,
     "paydays": [
         {
-            "label": "A💰",
+            "label": "A＄",
             "schedule": "bi-weekly",
             "weekday": "monday",
             "example": "2026-04-06"
         },
         {
-            "label": "B💰",
+            "label": "B＄",
             "schedule": "twice-monthly-1st-15th"
         }
     ],

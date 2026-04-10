@@ -12,6 +12,8 @@ import { findMonthArt } from './engine/assets';
 import { extractColorScheme } from './renderer/colors';
 import { renderCalendarHtml } from './renderer/html';
 import { createCalendarImage } from './renderer/image';
+import { fetchWeather, overlayEventWeather } from './engine/weather';
+import { getMoonPhases } from './engine/moon';
 import { getActiveDisplays } from './system/displays';
 import { setWallpaper } from './system/wallpaper';
 import { execSync } from 'child_process';
@@ -58,6 +60,11 @@ program.command('run')
         const holidays = await fetchHolidays(config.ical, year, month);
         const allEvents = [...baseEvents, ...holidays].sort((a, b) => a.date.localeCompare(b.date));
 
+        // 1.5 Fetch Weather & Moon
+        const dailyWeather = await fetchWeather(config.weather);
+        await overlayEventWeather(dailyWeather, allEvents, (config.weather as any)?.units || 'imperial');
+        const dailyMoon = getMoonPhases(year, month);
+
         // 2. Get active displays
         const displays = await getActiveDisplays();
         console.log(`Detected ${displays.length} display(s)`);
@@ -75,7 +82,7 @@ program.command('run')
                 console.log(`Extracted seam color for ${display.layout}:`, colors.background);
             }
             const html = renderCalendarHtml(
-                year, month, allEvents, colors, display.layout, artPath, showLabel, configDir, simulatedToday, config.fonts
+                year, month, allEvents, colors, display.layout, artPath, showLabel, configDir, simulatedToday, config.fonts, dailyWeather, dailyMoon
             );
 
             const outPath = path.join(outDir, `desktop-calendar-${display.layout}-${display.index}-${timestamp}.png`);
