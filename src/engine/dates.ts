@@ -240,11 +240,17 @@ export function getEventsForMonth(config: CalendarConfig, year: number, month: n
             curM = curM.add(1, 'month').startOf('month');
         }
 
+        const adjustPayday = (d: dayjs.Dayjs) => {
+            if (d.day() === 6) return d.subtract(1, 'day'); // Saturday -> Friday
+            if (d.day() === 0) return d.subtract(2, 'day'); // Sunday -> Friday
+            return d;
+        };
+
         for (const pd of config.paydays) {
             if (pd.schedule === 'twice-monthly-15th-last') {
                 for (const m of monthsCovered) {
-                    const midDay = m.date(15);
-                    const lastDay = m.endOf('month').startOf('day');
+                    const midDay = adjustPayday(m.date(15));
+                    const lastDay = adjustPayday(m.endOf('month').startOf('day'));
                     if (midDay.isBetween(calendarStart, calendarEnd, 'day', '[]')) {
                         events.push({ date: midDay.format('YYYY-MM-DD'), label: pd.label, size: 'small', type: 'payday' });
                     }
@@ -254,8 +260,8 @@ export function getEventsForMonth(config: CalendarConfig, year: number, month: n
                 }
             } else if (pd.schedule === 'twice-monthly-1st-15th') {
                 for (const m of monthsCovered) {
-                    const firstDay = m.date(1);
-                    const midDay = m.date(15);
+                    const firstDay = adjustPayday(m.date(1));
+                    const midDay = adjustPayday(m.date(15));
                     if (firstDay.isBetween(calendarStart, calendarEnd, 'day', '[]')) {
                         events.push({ date: firstDay.format('YYYY-MM-DD'), label: pd.label, size: 'small', type: 'payday' });
                     }
@@ -266,7 +272,7 @@ export function getEventsForMonth(config: CalendarConfig, year: number, month: n
             } else if (pd.schedule === 'monthly' && pd.example) {
                 const ex = dayjs(pd.example);
                 for (const m of monthsCovered) {
-                    const pdDay = m.date(ex.date());
+                    const pdDay = adjustPayday(m.date(ex.date()));
                     if (pdDay.isBetween(calendarStart, calendarEnd, 'day', '[]')) {
                         events.push({ date: pdDay.format('YYYY-MM-DD'), label: pd.label, size: 'small', type: 'payday' });
                     }
@@ -280,10 +286,16 @@ export function getEventsForMonth(config: CalendarConfig, year: number, month: n
                 let c = checkDay;
                 while (c.isSameOrBefore(calendarEnd, 'day')) {
                     const diffDays = c.diff(ex, 'day');
-                    if (pd.schedule === 'bi-weekly' && diffDays % 14 === 0 && c.isBetween(calendarStart, calendarEnd, 'day', '[]')) {
-                        events.push({ date: c.format('YYYY-MM-DD'), label: pd.label, size: 'small', type: 'payday' });
-                    } else if (pd.schedule === 'weekly' && diffDays % 7 === 0 && c.isBetween(calendarStart, calendarEnd, 'day', '[]')) {
-                        events.push({ date: c.format('YYYY-MM-DD'), label: pd.label, size: 'small', type: 'payday' });
+                    if (pd.schedule === 'bi-weekly' && diffDays % 14 === 0) {
+                        const adjDay = adjustPayday(c);
+                        if (adjDay.isBetween(calendarStart, calendarEnd, 'day', '[]')) {
+                            events.push({ date: adjDay.format('YYYY-MM-DD'), label: pd.label, size: 'small', type: 'payday' });
+                        }
+                    } else if (pd.schedule === 'weekly' && diffDays % 7 === 0) {
+                        const adjDay = adjustPayday(c);
+                        if (adjDay.isBetween(calendarStart, calendarEnd, 'day', '[]')) {
+                            events.push({ date: adjDay.format('YYYY-MM-DD'), label: pd.label, size: 'small', type: 'payday' });
+                        }
                     }
                     c = c.add(1, 'day');
                 }
