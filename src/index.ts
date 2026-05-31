@@ -70,6 +70,7 @@ program.command('run')
         console.log(`Detected ${displays.length} display(s)`);
 
         const showLabel = config['month-label'] === true;
+        const bottomBuffer = config['bottom-buffer'] !== undefined ? config['bottom-buffer'] : 60;
 
         // 4. Generate and Set
         for (const display of displays) {
@@ -82,7 +83,7 @@ program.command('run')
                 console.log(`Extracted seam color for ${display.layout}:`, colors.background);
             }
             const html = renderCalendarHtml(
-                year, month, allEvents, colors, display.layout, artPath, showLabel, configDir, simulatedToday, config.fonts, dailyWeather, dailyMoon
+                year, month, allEvents, colors, display.layout, artPath, showLabel, configDir, simulatedToday, config.fonts, dailyWeather, dailyMoon, bottomBuffer
             );
 
             const outPath = path.join(outDir, `desktop-calendar-${display.layout}-${display.index}-${timestamp}.png`);

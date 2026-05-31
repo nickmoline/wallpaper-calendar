@@ -32,7 +32,8 @@ export function renderCalendarHtml(
     simulatedToday?: dayjs.Dayjs,
     fonts?: { default: string; 'month-label'?: string | null; day?: string | null; label?: string | null },
     dailyWeather?: Map<string, DailyWeather>,
-    dailyMoon?: Map<string, DailyMoon>
+    dailyMoon?: Map<string, DailyMoon>,
+    bottomBuffer: number = 60
 ): string {
     const today = (simulatedToday || dayjs()).startOf('day');
     const startOfMonth = dayjs().year(year).month(month - 1).startOf('month');
@@ -236,6 +237,7 @@ ${fontTags}
         --text: ${colors.text};
         --muted: ${colors.muted};
         --x-color: ${colors.xColor};
+        --bottom-buffer: ${bottomBuffer}px;
     }
     body {
         margin: 0; padding: 0;
@@ -246,7 +248,7 @@ ${fontTags}
         overflow: hidden;
     }
     .layout-normal { font-size: 0.85rem; }
-    .layout-normal .calendar-container { padding: 25px; }
+    .layout-normal .calendar-container { padding: 25px 25px calc(25px + var(--bottom-buffer, 0px)) 25px; }
     .layout-normal .month-heading { font-size: 2.2rem; margin-bottom: 10px; text-shadow: 2px 4px 10px rgba(0,0,0,0.8); }
     .layout-normal .weekday-header { font-size: 1rem; padding: 5px 0; }
     .layout-normal .date-number { font-size: 1.2rem; }
@@ -275,7 +277,7 @@ ${fontTags}
     }
     .calendar-container {
         flex: 1;
-        padding: 40px;
+        padding: 40px 40px calc(40px + var(--bottom-buffer, 0px)) 40px;
         display: flex;
         flex-direction: column;
         min-height: 0;

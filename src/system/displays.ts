@@ -38,7 +38,8 @@ public class WinScreens {
         string json = "[";
         for (uint i = 0; i < count; i++) {
             string id = w.GetMonitorDevicePathAt(i);
-            w.GetMonitorRECT(id, out RECT rect);
+            RECT rect;
+            w.GetMonitorRECT(id, out rect);
             int width = Math.Abs(rect.Right - rect.Left);
             int height = Math.Abs(rect.Bottom - rect.Top);
             json += "{\\"index\\":" + i + ",\\"width\\":" + width + ",\\"height\\":" + height + "}";

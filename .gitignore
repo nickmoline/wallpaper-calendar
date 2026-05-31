@@ -5,4 +5,5 @@ month-art/
 !month-art/.gitkeep
 !event-art/google-io-2026.png
 config.json
+config-archive.json
 output/

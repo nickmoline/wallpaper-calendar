@@ -49,6 +49,7 @@ export interface FontConfig {
 
 export interface CalendarConfig {
     'month-label'?: boolean;
+    'bottom-buffer'?: number;
     fonts?: FontConfig;
     paydays?: PaydayConfig[];
     'recurring-events'?: {
