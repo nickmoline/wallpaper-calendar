@@ -16,42 +16,17 @@ export interface DisplayLayout {
 export async function getActiveDisplays(): Promise<DisplayLayout[]> {
     if (os.platform() === 'win32') {
         const psScript = `
-$code = @"
-using System;
-using System.Runtime.InteropServices;
-
-public class WinScreens {
-    [ComImport] [Guid("C2CF3110-460E-4fc1-B9D0-8A1C0C9CC4BD")] public class DesktopWallpaperClass { }
-    [ComImport] [Guid("B92B56A9-8B55-4E14-9A89-0199BBB6F93B")] [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IDesktopWallpaper {
-        void SetWallpaper([MarshalAs(UnmanagedType.LPWStr)] string monitorID, [MarshalAs(UnmanagedType.LPWStr)] string wallpaper);
-        [return: MarshalAs(UnmanagedType.LPWStr)] string GetWallpaper([MarshalAs(UnmanagedType.LPWStr)] string monitorID);
-        [return: MarshalAs(UnmanagedType.LPWStr)] string GetMonitorDevicePathAt(uint monitorIndex);
-        uint GetMonitorDevicePathCount();
-        void GetMonitorRECT([MarshalAs(UnmanagedType.LPWStr)] string monitorID, out RECT displayRect);
-    }
-    [StructLayout(LayoutKind.Sequential)] public struct RECT { public int Left; public int Top; public int Right; public int Bottom; }
-
-    public static string GetDisplays() {
-        var w = (IDesktopWallpaper)new DesktopWallpaperClass();
-        uint count = w.GetMonitorDevicePathCount();
-        string json = "[";
-        for (uint i = 0; i < count; i++) {
-            string id = w.GetMonitorDevicePathAt(i);
-            RECT rect;
-            w.GetMonitorRECT(id, out rect);
-            int width = Math.Abs(rect.Right - rect.Left);
-            int height = Math.Abs(rect.Bottom - rect.Top);
-            json += "{\\"index\\":" + i + ",\\"width\\":" + width + ",\\"height\\":" + height + "}";
-            if (i < count - 1) json += ",";
-        }
-        json += "]";
-        return json;
+Add-Type -AssemblyName System.Windows.Forms
+$screens = [System.Windows.Forms.Screen]::AllScreens
+$results = @()
+foreach ($s in $screens) {
+    $results += @{
+        index = $results.Count
+        width = $s.Bounds.Width
+        height = $s.Bounds.Height
     }
 }
-"@
-Add-Type -TypeDefinition $code
-[WinScreens]::GetDisplays()
+$results | ConvertTo-Json -Compress
         `;
         const tmpFile = path.join(os.tmpdir(), 'desktop-cal-getScreens.ps1');
         fs.writeFileSync(tmpFile, psScript);

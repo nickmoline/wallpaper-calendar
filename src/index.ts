@@ -104,12 +104,14 @@ program.command('install')
         const cwd = process.cwd();
 
         if (os.platform() === 'win32') {
-            const cmd = `npx ts-node "${path.resolve(__filename)}" run -c "${configPath}"`;
+            // Use powershell with WindowStyle Hidden to prevent the cmd window from flashing on boot
+            const scriptStr = `npx ts-node '${path.resolve(__filename)}' run -c '${configPath}'`;
+            const psWrapper = `powershell.exe -WindowStyle Hidden -Command \\"${scriptStr}\\"`;
             const taskName = 'DesktopCalendar';
             try {
-                execSync(`schtasks /create /tn "${taskName}" /tr "${cmd}" /sc daily /st 00:00 /f`, { stdio: 'inherit' });
+                execSync(`schtasks /create /tn "${taskName}" /tr "${psWrapper}" /sc daily /st 00:00 /f`, { stdio: 'inherit' });
                 // Also add a logon trigger
-                execSync(`schtasks /create /tn "${taskName}_Boot" /tr "${cmd}" /sc onlogon /f`, { stdio: 'inherit' });
+                execSync(`schtasks /create /tn "${taskName}_Boot" /tr "${psWrapper}" /sc onlogon /f`, { stdio: 'inherit' });
                 console.log(`\nWindows Task Scheduler entries created: "${taskName}" (daily) and "${taskName}_Boot" (on logon)`);
             } catch (e) {
                 console.error('Failed to create scheduled task. Try running as Administrator.', e);

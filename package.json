@@ -29,5 +29,8 @@
     "@types/suncalc": "^1.9.2",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2"
+  },
+  "allowScripts": {
+    "puppeteer@24.40.0": true
   }
 }
