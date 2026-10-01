@@ -9,16 +9,22 @@ export function findMonthArt(baseDir: string, year: number, month: number, layou
     const mm = String(month).padStart(2, '0');
     const yyyyMm = `${year}-${mm}`;
     
-    if (layout === 'normal') {
+    if (layout === '4k-normal') {
+        const normal4kMatch = files.find(f => f.startsWith(`${yyyyMm}-`) && (f.includes('-4k-normal') || f.includes('-4k'))) ||
+                              files.find(f => f.startsWith(`${mm}-`) && (f.includes('-4k-normal') || f.includes('-4k')));
+        if (normal4kMatch) return path.join(artDir, normal4kMatch);
+    }
+    
+    if (layout === 'normal' || layout === '4k-normal') {
         const normalMatch = files.find(f => f.startsWith(`${yyyyMm}-`) && f.includes('-normal')) || 
                             files.find(f => f.startsWith(`${mm}-`) && f.includes('-normal'));
         if (normalMatch) return path.join(artDir, normalMatch);
     }
     
-    let match = files.find(f => f.startsWith(`${yyyyMm}-`) && !f.includes('-normal'));
+    let match = files.find(f => f.startsWith(`${yyyyMm}-`) && !f.includes('-normal') && !f.includes('-4k'));
     if (match) return path.join(artDir, match);
     
-    match = files.find(f => f.startsWith(`${mm}-`) && !f.includes('-normal'));
+    match = files.find(f => f.startsWith(`${mm}-`) && !f.includes('-normal') && !f.includes('-4k'));
     if (match) return path.join(artDir, match);
     
     return null;

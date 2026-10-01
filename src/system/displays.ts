@@ -6,11 +6,13 @@ import * as path from 'path';
 
 const execAsync = promisify(exec);
 
+export type LayoutType = 'vertical' | 'ultrawide' | 'normal' | '4k-normal';
+
 export interface DisplayLayout {
     index: number; // 0-based
     width: number;
     height: number;
-    layout: 'vertical' | 'ultrawide' | 'normal';
+    layout: LayoutType;
 }
 
 export async function getActiveDisplays(): Promise<DisplayLayout[]> {
@@ -37,9 +39,14 @@ $results | ConvertTo-Json -Compress
         
         for (const screen of screens) {
             const ratio = screen.width / screen.height;
-            let layout: 'vertical' | 'ultrawide' | 'normal' = 'normal';
-            if (ratio <= 1.2) layout = 'vertical';
-            else if (ratio >= 2.0) layout = 'ultrawide';
+            let layout: LayoutType = 'normal';
+            if (ratio <= 1.2) {
+                layout = 'vertical';
+            } else if (ratio >= 2.0) {
+                layout = 'ultrawide';
+            } else if (screen.width >= 2560 || screen.height >= 1400) {
+                layout = '4k-normal';
+            }
             
             results.push({
                 index: screen.index,
@@ -77,12 +84,14 @@ JSON.stringify(results);
     
     for (const screen of screens) {
         const ratio = screen.width / screen.height;
-        let layout: 'vertical' | 'ultrawide' | 'normal' = 'normal';
+        let layout: LayoutType = 'normal';
         
         if (ratio <= 1.2) {
             layout = 'vertical';
         } else if (ratio >= 2.0) {
             layout = 'ultrawide';
+        } else if (screen.width >= 2560 || screen.height >= 1400) {
+            layout = '4k-normal';
         }
         
         results.push({

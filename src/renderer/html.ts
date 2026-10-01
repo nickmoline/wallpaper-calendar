@@ -13,8 +13,9 @@ function getBase64Image(imagePath: string, configDir: string): string {
         const absPath = path.resolve(configDir, imagePath);
         if (!fs.existsSync(absPath)) return emptyPixel;
         const ext = path.extname(absPath).toLowerCase().replace('.', '') || 'png';
+        const mime = ext === 'svg' ? 'image/svg+xml' : ext === 'jpg' ? 'image/jpeg' : `image/${ext}`;
         const data = fs.readFileSync(absPath).toString('base64');
-        return `data:image/${ext};base64,${data}`;
+        return `data:${mime};base64,${data}`;
     } catch (e) {
         return emptyPixel;
     }
@@ -25,7 +26,7 @@ export function renderCalendarHtml(
     month: number,
     events: ProcessedEvent[],
     colors: ColorScheme,
-    layout: 'vertical' | 'ultrawide' | 'normal',
+    layout: 'vertical' | 'ultrawide' | 'normal' | '4k-normal',
     artPath: string | null,
     showMonthLabel: boolean,
     configDir: string,
@@ -191,6 +192,8 @@ export function renderCalendarHtml(
     } else if (layout === 'ultrawide' && artPath) {
         wrapClass = 'layout-ultrawide';
         artHtml = `<div class="art-container"><img class="art-img" style="object-position: center center;" src="${getBase64Image(artPath, configDir)}" /></div>`;
+    } else if (layout === '4k-normal') {
+        wrapClass = 'layout-4k-normal';
     } else {
         wrapClass = 'layout-normal';
     }
@@ -247,14 +250,21 @@ ${fontTags}
         box-sizing: border-box;
         overflow: hidden;
     }
-    .layout-normal { font-size: 0.85rem; }
+    .layout-normal, .layout-4k-normal { font-size: 0.85rem; }
     .layout-normal .calendar-container { padding: 25px 25px calc(25px + var(--bottom-buffer, 0px)) 25px; }
-    .layout-normal .month-heading { font-size: 2.2rem; margin-bottom: 10px; text-shadow: 2px 4px 10px rgba(0,0,0,0.8); }
-    .layout-normal .weekday-header { font-size: 1rem; padding: 5px 0; }
-    .layout-normal .date-number { font-size: 1.2rem; }
-    .layout-normal .day { padding: 8px; }
-    .layout-normal .small-icon { max-width: 30px; max-height: 30px; }
-    .layout-normal .medium-icon { max-width: 50px; max-height: 50px; }
+    .layout-4k-normal .calendar-container {
+        flex: none;
+        width: 70vw;
+        height: 70vh;
+        box-sizing: border-box;
+        padding: 25px 25px calc(25px + var(--bottom-buffer, 0px)) 25px;
+    }
+    .layout-normal .month-heading, .layout-4k-normal .month-heading { font-size: 2.2rem; margin-bottom: 10px; text-shadow: 2px 4px 10px rgba(0,0,0,0.8); }
+    .layout-normal .weekday-header, .layout-4k-normal .weekday-header { font-size: 1rem; padding: 5px 0; }
+    .layout-normal .date-number, .layout-4k-normal .date-number { font-size: 1.2rem; }
+    .layout-normal .day, .layout-4k-normal .day { padding: 8px; }
+    .layout-normal .small-icon, .layout-4k-normal .small-icon { max-width: 30px; max-height: 30px; }
+    .layout-normal .medium-icon, .layout-4k-normal .medium-icon { max-width: 50px; max-height: 50px; }
     .wrapper {
         display: flex;
         width: 100vw;
@@ -264,6 +274,7 @@ ${fontTags}
     .layout-vertical { flex-direction: column; }
     .layout-ultrawide { flex-direction: row; }
     .layout-normal { flex-direction: column; justify-content: center; }
+    .layout-4k-normal { flex-direction: column; justify-content: flex-end; align-items: flex-end; }
     
     .art-container {
         flex: 1;
@@ -537,7 +548,7 @@ ${fontTags}
     }
 </style>
 </head>
-<body style="${(layout === 'normal' && artPath) ? `background-image: url('${getBase64Image(artPath, configDir)}'); background-size: cover; background-position: center;` : ''}">
+<body style="${((layout === 'normal' || layout === '4k-normal') && artPath) ? `background-image: url('${getBase64Image(artPath, configDir)}'); background-size: cover; background-position: center;` : ''}">
     <div class="wrapper ${wrapClass}">
         ${artHtml}
         <div class="calendar-container">

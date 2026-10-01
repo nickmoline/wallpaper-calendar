@@ -17,11 +17,12 @@ export interface ColorScheme {
 
 function getBase64Image(imagePath: string): string {
     const ext = path.extname(imagePath).toLowerCase().replace('.', '') || 'png';
+    const mime = ext === 'svg' ? 'image/svg+xml' : ext === 'jpg' ? 'image/jpeg' : `image/${ext}`;
     const data = fs.readFileSync(imagePath).toString('base64');
-    return `data:image/${ext};base64,${data}`;
+    return `data:${mime};base64,${data}`;
 }
 
-export async function extractColorScheme(imagePath: string, layout: 'vertical' | 'ultrawide' | 'normal'): Promise<ColorScheme> {
+export async function extractColorScheme(imagePath: string, layout: 'vertical' | 'ultrawide' | 'normal' | '4k-normal'): Promise<ColorScheme> {
     const browser = await puppeteer.launch({ headless: true });
     
     let topColor = '#ffffff';
